@@ -32,7 +32,7 @@
 # ENTRYPOINT ["bash", "./start.sh"]
 
 
-FROM python:3.9-slim-bullseye
+FROM python:3.12-slim-bullseye
 
 USER root
 
