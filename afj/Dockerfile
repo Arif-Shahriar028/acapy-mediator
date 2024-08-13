@@ -1,9 +1,9 @@
 # arm + amd compatible Dockerfile
-FROM ghcr.io/findy-network/findy-base:indy-1.16.ubuntu-18.04 AS indy-base
+FROM ghcr.io/findy-network/findy-base:indy-1.16.ubuntu-22.04 AS indy-base
 
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 
-ARG NODE_VERSION=v16.20.0
+ARG NODE_VERSION=v18.17.0
 
 # install indy deps and files from base
 RUN apt-get update && apt-get install -y libsodium23 libssl1.1 libzmq5 git zsh
@@ -19,7 +19,7 @@ RUN apt-get install -y curl python3 build-essential ca-certificates && \
   nvm install ${NODE_VERSION} && \
   npm install yarn -g
 
-ENV PATH $PATH:/root/.nvm/versions/node/${NODE_VERSION}/bin
+ENV PATH=$PATH:/root/.nvm/versions/node/${NODE_VERSION}/bin
 
 RUN mkdir /mediator
 

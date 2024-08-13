@@ -49,8 +49,8 @@ const agentConfig: InitConfig = {
     id: process.env.WALLET_NAME || "AriesFrameworkJavaScript",
     key: process.env.WALLET_KEY || "AriesFrameworkJavaScript",
   },
-  autoAcceptConnections: true,
-  autoAcceptMediationRequests: true,
+  // autoAcceptConnections: true,
+  // autoAcceptMediationRequests: true,
   logger: new ConsoleLogger(LogLevel.debug),
 };
 
