@@ -77,11 +77,11 @@ RUN poetry install --no-root
 
 # RUN python3 --version
 
-RUN poetry run chmod +x start.sh 
+# RUN poetry run chmod +x start.sh 
 # poetry run aca-py --version > ./acapy-version.txt
 
 # ENTRYPOINT ["ls"]
 
 # ENTRYPOINT ["bash", "pyton3", "--version"]
 
-ENTRYPOINT [ "poetry", "run", "./start.sh" ]
+# ENTRYPOINT [ "bash" ]
