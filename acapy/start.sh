@@ -8,6 +8,14 @@ fi
 
 echo "Starting agent with endpoint(s): ${MEDIATOR_URL} wss://${MEDIATOR_URL#*://*}"
 
+# poetry shell
+
+poetry show
+
+python3 --version
+
+poetry show anoncreds --tree
+
 acapyCommand=(
     'aca-py'
     'start'
@@ -33,4 +41,4 @@ else
     echo "Not using Firebase plugin"
 fi
 
-"${acapyCommand[@]}"
+poetry run "${acapyCommand[@]}"

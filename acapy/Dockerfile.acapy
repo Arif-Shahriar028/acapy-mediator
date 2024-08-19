@@ -1,38 +1,7 @@
-# # FROM python:3.12.5-slim-bullseye
 
 # FROM python:3.9-slim-bullseye
 
-
-# USER root
-
-# RUN mkdir -p /acapy-mediator
-# WORKDIR /acapy-mediator
-
-# ADD https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 /usr/bin/jq
-# RUN chmod +x /usr/bin/jq
-
-# USER $user
-
-# COPY ../aries_cloudagent-0.12.2 /acapy-mediator/
-
-# # Copy the necessary files from the mediator sub-folder
-# COPY acapy/start.sh start.sh
-# COPY acapy/configs configs
-
-# # Copy and install plugins
-# COPY acapy/plugins plugins
-
-
-# RUN pip3 install --no-cache-dir -e plugins/firebase_push_notifications
-
-
-# RUN chmod +x start.sh && \
-#   aca-py --version > ./acapy-version.txt
-
-# ENTRYPOINT ["bash", "./start.sh"]
-
-
-FROM python:3.9-slim-bullseye
+FROM ghcr.io/hyperledger/aries-cloudagent-python:py3.9-0.10.4
 
 USER root
 
@@ -53,35 +22,41 @@ RUN chmod +x /usr/bin/jq
 USER $user
 
 # Copy the project files including the pyproject.toml for Poetry
-COPY ./aries_cloudagent-0.12.2 /acapy-mediator/
+COPY ./aries_cloudagent-0.12.2 aries_cloudagent
 
 # Copy the necessary files from the mediator sub-folder
-COPY acapy/start.sh start.sh
-COPY acapy/configs configs
+COPY acapy/start.sh aries_cloudagent/start.sh
+COPY acapy/configs aries_cloudagent/configs
 
 # Copy and install plugins
-COPY acapy/plugins plugins
+COPY acapy/plugins aries_cloudagent/plugins
+
+
+# Uninstalling the existing acapy packages of pip 
+RUN pip3 uninstall aries-cloudagent -y
+
+# RUN pip3 install --no-cache-dir -e plugins/firebase_push_notifications
+
+WORKDIR /acapy-mediator/aries_cloudagent
 
 # Rebuild Poetry environment
-RUN poetry install --no-root && \
-  poetry install
-
+RUN poetry install
+# poetry install --dev
 # Install the project in editable mode
-RUN poetry install --no-root
+# RUN poetry install --no-root
 
-RUN poetry install --extras "askar" --extras "bbs" --extras "indy"
+# RUN poetry install --extras "askar" --extras "bbs" --extras "indy"
 
-RUN poetry install --no-root
+# RUN poetry install
+
+RUN poetry add anoncreds==0.2.0 aries-askar==0.3.2 indy-vdr==0.4.2 indy_credx==1.1.1
+
 
 # Run commands within the Poetry virtual environment using poetry run
 
 # RUN python3 --version
 
-# RUN poetry run chmod +x start.sh 
-# poetry run aca-py --version > ./acapy-version.txt
+RUN chmod +x start.sh 
 
-# ENTRYPOINT ["ls"]
+ENTRYPOINT ["bash", "./start.sh"]
 
-# ENTRYPOINT ["bash", "pyton3", "--version"]
-
-# ENTRYPOINT [ "bash" ]
