@@ -6,7 +6,8 @@ FROM ubuntu:22.04
 ARG NODE_VERSION=v18.17.0
 
 # install indy deps and files from base
-RUN apt-get update && apt-get install -y libsodium23 libssl1.1 libzmq5 git zsh
+# RUN apt-get update && apt-get install -y libsodium23 libssl1.1 libzmq5 git zsh
+RUN apt-get update && apt-get install -y libsodium23 libssl3 libzmq5 git zsh
 
 COPY --from=indy-base /usr/include/indy /usr/include/indy
 COPY --from=indy-base /usr/lib/libindy.a /usr/lib/libindy.a

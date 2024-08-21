@@ -9,7 +9,7 @@ from .....messaging.base_handler import (
     RequestContext,
 )
 from .....protocols.connections.v1_0.manager import ConnectionManager
-from ..manager import RoutingManager, RoutingManagerError
+from ..manager import LOGGER, RoutingManager, RoutingManagerError
 from ..messages.forward import Forward
 
 
@@ -46,10 +46,14 @@ class ForwardHandler(BaseHandler):
         # TODO: validate that there is 1 target, with 1 verkey. warn otherwise
         connection_verkey = connection_targets[0].recipient_keys[0]
 
+        LOGGER.info("=========== ========== Connection targets: "+ connection_targets)
+
         # Note: not currently vetting the state of the connection here
         self._logger.info(
             f"Forwarding message to connection: {recipient.connection_id}"
         )
+
+        LOGGER.info(">>>>>>>>>>>>  packed message: \n", packed)
 
         send_status = await responder.send(
             packed,

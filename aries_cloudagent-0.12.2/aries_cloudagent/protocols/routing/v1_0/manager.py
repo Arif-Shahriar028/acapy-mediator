@@ -65,6 +65,7 @@ class RoutingManager:
                     record = await RouteRecord.retrieve_by_recipient_key(
                         session, recip_verkey
                     )
+                    LOGGER.info("fetched records: \n", record)
                 LOGGER.info(">>> FOUND routing record for verkey: " + recip_verkey)
                 return record
             except StorageDuplicateError:
