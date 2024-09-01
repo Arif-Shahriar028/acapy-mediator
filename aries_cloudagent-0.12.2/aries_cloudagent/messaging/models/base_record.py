@@ -257,6 +257,16 @@ class BaseRecord(BaseModel):
             cls.prefix_tag_filter(tag_filter),
             options={"forUpdate": for_update, "retrieveTags": False},
         )
+        LOGGER.info(f"===========>>>>>>>>>> Filtered tag : {tag_filter},  Record rows: {rows}")
+
+        rows2 = await storage.find_all_records(
+            cls.RECORD_TYPE,
+            options={"forUpdate": for_update, "retrieveTags": False},
+        )
+
+        LOGGER.info(f"===========>>>>>>>>>> All Record rows: {rows2}")
+
+
         found = None
         for record in rows:
             vals = json.loads(record.value)

@@ -781,11 +781,14 @@ class AdminServer(BaseAdminServer):
     async def websocket_handler(self, request):
         """Send notifications to admin client over websocket."""
 
+        LOGGER.info(f"=========>>>> websocket_handler in server.py : {request}")
         ws = web.WebSocketResponse()
         await ws.prepare(request)
         socket_id = str(uuid.uuid4())
         queue = BasicMessageQueue()
         loop = asyncio.get_event_loop()
+
+        LOGGER.info(f"=======>>>>>  socket id in server.py: {socket_id}")
 
         if self.admin_insecure_mode:
             # open to send websocket messages without api key auth
@@ -813,6 +816,9 @@ class AdminServer(BaseAdminServer):
                     },
                 }
             )
+
+            LOGGER.info(f"========>>>>>> WEBSOCKET QUEUE: {self.websocket_queues}")
+            LOGGER.info(f"========>>>>>>> QUEUES: {queue}")
 
             closed = False
             receive = loop.create_task(ws.receive_json())

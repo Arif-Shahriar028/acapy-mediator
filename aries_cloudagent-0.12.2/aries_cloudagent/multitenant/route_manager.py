@@ -53,7 +53,7 @@ class MultitenantRouteManager(RouteManager):
     ):
         wallet_id = profile.settings["wallet.id"]
         LOGGER.info(
-            f"Add route record for recipient {recipient_key} to wallet {wallet_id}"
+            f"=========###### Add route record for recipient {recipient_key} to wallet {wallet_id}"
         )
         routing_mgr = RoutingManager(self.root_profile)
         mediation_mgr = MediationManager(self.root_profile)

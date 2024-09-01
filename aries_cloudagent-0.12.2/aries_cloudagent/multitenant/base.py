@@ -399,7 +399,7 @@ class BaseMultitenantManager(ABC):
                 wallet = await WalletRecord.retrieve_by_id(
                     session, routing_record.wallet_id
                 )
-
+            LOGGER.info(f"=======>>>>>>> Wallet record: {wallet}")
             return wallet
         except RouteNotFoundError:
             pass

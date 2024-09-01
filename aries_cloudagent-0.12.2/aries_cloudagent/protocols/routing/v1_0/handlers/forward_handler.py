@@ -32,8 +32,13 @@ class ForwardHandler(BaseHandler):
         rt_mgr = RoutingManager(context.profile)
         target = context.message.to
 
+        LOGGER.info(f"============>>>>>>>>>>   full message: {context.message}")
+
+        LOGGER.info(f"==========>>>> target: {target}")
+
         try:
             recipient = await rt_mgr.get_recipient(target)
+            LOGGER.info(f"========> recipient : {recipient}")
         except RoutingManagerError:
             self._logger.exception("Error resolving recipient for forwarded message")
             return
@@ -46,14 +51,14 @@ class ForwardHandler(BaseHandler):
         # TODO: validate that there is 1 target, with 1 verkey. warn otherwise
         connection_verkey = connection_targets[0].recipient_keys[0]
 
-        LOGGER.info("=========== ========== Connection targets: "+ connection_targets)
+        LOGGER.info(f"=========== ========== Connection targets: {connection_targets}")
 
         # Note: not currently vetting the state of the connection here
         self._logger.info(
             f"Forwarding message to connection: {recipient.connection_id}"
         )
 
-        LOGGER.info(">>>>>>>>>>>>  packed message: \n", packed)
+        LOGGER.info(f">>>>>>>>>>>>  packed message: {packed}")
 
         send_status = await responder.send(
             packed,

@@ -169,10 +169,14 @@ class InboundTransportManager:
             wire_format=wire_format,
         )
         self.sessions[session.session_id] = session
+        LOGGER.info(f"=======>>>>>>> Created sessions: {session}")
+        LOGGER.info(f"========>>>>>>>>>> All sessions : {self.sessions}")
         return session
 
     def dispatch_complete(self, message: InboundMessage, completed: CompletedTask):
         """Handle completion of message dispatch."""
+        LOGGER.info("=========>>>>>>>> Handle completion of message dispatch ")
+        LOGGER.info(f"========>>>>> session id: {message.session_id}")
         session: InboundSession = self.sessions.get(message.session_id)
         if session and session.accept_undelivered and not session.response_buffered:
             self.process_undelivered(session)

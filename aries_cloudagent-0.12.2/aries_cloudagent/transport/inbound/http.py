@@ -46,6 +46,8 @@ class HttpTransport(BaseInboundTransport):
             InboundTransportSetupError: If there was an error starting the webserver
 
         """
+        LOGGER.info("======= start function (transport/inbound/http.py) ==========")
+
         app = await self.make_application()
         runner = web.AppRunner(app)
         await runner.setup()
@@ -79,6 +81,8 @@ class HttpTransport(BaseInboundTransport):
             body = await request.text()
         else:
             body = await request.read()
+
+        LOGGER.info(f"=========>>>>> inbound http message handler {request}")
 
         client_info = {"host": request.host, "remote": request.remote}
 

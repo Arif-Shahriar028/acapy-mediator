@@ -440,6 +440,7 @@ class ConnectionManager(BaseConnectionManager):
 
         # Determine what key will need to sign the response
         if receipt.recipient_did_public:
+            self._logger.info(f"=======>>>> receipt.recipient_did_public {receipt.recipient_did_public}")
             async with self.profile.session() as session:
                 wallet = session.inject(BaseWallet)
                 my_info = await wallet.get_local_did(receipt.recipient_did)

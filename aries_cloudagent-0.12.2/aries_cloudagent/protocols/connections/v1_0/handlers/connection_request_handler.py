@@ -21,6 +21,8 @@ class ConnectionRequestHandler(BaseHandler):
         self._logger.debug(f"ConnectionRequestHandler called with context {context}")
         assert isinstance(context.message, ConnectionRequest)
 
+        self._logger.info("==========>>>>>>  ConnectionRequestHandler called (protocols/connections/v1_0/handlers/connection_request_handler.py)")
+
         profile = context.profile
         mgr = ConnectionManager(profile)
 

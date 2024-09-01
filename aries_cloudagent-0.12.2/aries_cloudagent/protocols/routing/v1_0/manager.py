@@ -65,7 +65,8 @@ class RoutingManager:
                     record = await RouteRecord.retrieve_by_recipient_key(
                         session, recip_verkey
                     )
-                    LOGGER.info("fetched records: \n", record)
+                    LOGGER.info("========== fetched records:  ============")
+                    LOGGER.info(f"{record}")
                 LOGGER.info(">>> FOUND routing record for verkey: " + recip_verkey)
                 return record
             except StorageDuplicateError:
@@ -155,4 +156,5 @@ class RoutingManager:
         async with self._profile.session() as session:
             await route.save(session, reason="Created new route")
         LOGGER.info(">>> CREATED routing record for verkey: " + recipient_key)
+        LOGGER.info(">>> Route record:  " , route)
         return route

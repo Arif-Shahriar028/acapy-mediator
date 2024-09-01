@@ -105,6 +105,7 @@ def run_loop(startup: Coroutine, shutdown: Coroutine):
 
 def main():
     """Execute the main line."""
+    LOGGER.info(f" =======>>>>>>> everythings starts from here")
     if __name__ == "__main__":
         execute()
 

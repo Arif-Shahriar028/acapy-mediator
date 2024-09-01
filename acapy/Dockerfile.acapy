@@ -1,6 +1,3 @@
-
-# FROM python:3.9-slim-bullseye
-
 FROM ghcr.io/hyperledger/aries-cloudagent-python:py3.9-0.10.4
 
 USER root
@@ -50,11 +47,6 @@ RUN poetry install
 # RUN poetry install
 
 RUN poetry add anoncreds==0.2.0 aries-askar==0.3.2 indy-vdr==0.4.2 indy_credx==1.1.1
-
-
-# Run commands within the Poetry virtual environment using poetry run
-
-# RUN python3 --version
 
 RUN chmod +x start.sh 
 

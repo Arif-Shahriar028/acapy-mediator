@@ -1,6 +1,7 @@
 """Websockets Transport classes and functions."""
 
 import asyncio
+import json
 import logging
 from typing import Optional
 
@@ -37,6 +38,9 @@ class WsTransport(BaseInboundTransport):
             "transport.ws.timeout_interval"
         )
 
+        """to check active connections"""
+        self.active_connections = {}
+
         # TODO: set scheme dynamically based on SSL settings (ws/wss)
 
     @property
@@ -47,6 +51,7 @@ class WsTransport(BaseInboundTransport):
     async def make_application(self) -> web.Application:
         """Construct the aiohttp application."""
         app = web.Application()
+        LOGGER.info("======= inside make_application (transport/inbound/ws.py) ==========")
         app.add_routes([web.get("/", self.inbound_message_handler)])
         return app
 
@@ -94,7 +99,40 @@ class WsTransport(BaseInboundTransport):
         await ws.prepare(request)
         loop = asyncio.get_event_loop()
 
+        # Print the entire request object
+        LOGGER.info(f">>>>>>>> Received request: {request}")
+        
+        # Optionally, you can log more detailed parts of the request
+        LOGGER.info(f">>>>>>>> Request headers: {request.headers}")
+        LOGGER.info(f">>>>>>>> Request method: {request.method}")
+        LOGGER.info(f">>>>>>>> Request path: {request.path}")
+        LOGGER.info(f">>>>>>>> Request query: {request.query}")
+        LOGGER.info(f">>>>>>>> Request cookies: {request.cookies}")
+        LOGGER.info(f">>>>>>>> Request remote IP: {request.remote}")
+
+        client_ip = request.headers.get("X-Forwarded-For")
+        
+        
+
+        if client_ip:
+            # X-Forwarded-For may contain multiple IPs, take the first one
+            client_ip = client_ip.split(",")[0]
+        else:
+            client_ip = request.remote  # fallback to request.remote if no header is present
+
+        LOGGER.info(f">>>>>>>> Real Client IP: {client_ip}")
         client_info = {"host": request.host, "remote": request.remote}
+
+        """add a new active connection"""
+        self.active_connections[client_ip] = {
+            "ws": ws,
+            "host": request.host,
+            "remote": client_ip,
+            "connected_at": loop.time(),
+        }
+
+        """log the active connections"""
+        self.log_active_connections()
 
         session = await self.create_session(
             accept_undelivered=True, can_respond=True, client_info=client_info
@@ -111,7 +149,7 @@ class WsTransport(BaseInboundTransport):
 
                 if inbound.done():
                     msg: WSMessage = inbound.result()
-                    LOGGER.info("Websocket received message: %s", msg.data)
+                    LOGGER.info(".........>>>>>>>> Websocket received message: %s", msg.data)
                     if msg.type in (WSMsgType.TEXT, WSMsgType.BINARY):
                         try:
                             await session.receive(msg.data)
@@ -134,7 +172,9 @@ class WsTransport(BaseInboundTransport):
 
                 if outbound.done() and not ws.closed:
                     # response would be None if session was closed
+                    LOGGER.info("==========>>>>>>>>>> Outbound done state ====")
                     response = outbound.result()
+                    LOGGER.info(f"==========>>>>>>>>>> Outbound result: {response}")
                     if isinstance(response, bytes):
                         await ws.send_bytes(response)
                     else:
@@ -149,6 +189,16 @@ class WsTransport(BaseInboundTransport):
 
         if not ws.closed:
             await ws.close()
+
+        if request.remote in self.active_connections:
+            del self.active_connections[request.remote]
+
         LOGGER.info("Websocket connection closed")
 
         return ws
+    
+    def log_active_connections(self):
+        LOGGER.info("==========>>>>>>> Active WebSocket Connections: <<<<<<<==========")
+        for remote, info in self.active_connections.items():
+            LOGGER.info(f"WS: {info['ws']}, Remote: {remote}, Host: {info['host']}, Connected At: {info['connected_at']}")
+

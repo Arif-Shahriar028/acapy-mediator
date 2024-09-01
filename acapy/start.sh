@@ -8,13 +8,9 @@ fi
 
 echo "Starting agent with endpoint(s): ${MEDIATOR_URL} wss://${MEDIATOR_URL#*://*}"
 
-# poetry shell
+pwd
+ls 
 
-poetry show
-
-python3 --version
-
-poetry show anoncreds --tree
 
 acapyCommand=(
     'aca-py'
@@ -32,6 +28,7 @@ acapyCommand=(
     '--admin' '0.0.0.0' "${MEDIATOR_AGENT_HTTP_ADMIN_PORT}"
     '--admin-api-key' "${MEDIATOR_AGENT_ADMIN_API_KEY}"
     '--endpoint' "${MEDIATOR_URL}" wss://"${MEDIATOR_URL#*://*}"
+    # '--webhook-url' "${MEDIATOR_CONTROLLER_WEBHOOK}"
 )
 
 if [ "${USE_FIREBASE_PLUGIN}" = "true" ]; then
