@@ -1,7 +1,7 @@
 # arm + amd compatible Dockerfile
 FROM ghcr.io/findy-network/findy-base:indy-1.16.ubuntu-22.04 AS indy-base
 
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 ARG NODE_VERSION=v18.17.0
 
